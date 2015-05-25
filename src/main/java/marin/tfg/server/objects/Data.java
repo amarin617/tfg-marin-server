@@ -1,21 +1,17 @@
 package marin.tfg.server.objects;
 
-import org.springframework.hateoas.ResourceSupport;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public class Data extends ResourceSupport{
+public class Data {
 
 	private Types type;
-	private byte[] data;
-	
-	@JsonCreator
-	public Data(@JsonProperty("content") Types type,
-			@JsonProperty("content") byte[] data) {
+	private String data;
+
+	public Data(Types type, String data) {
 		super();
 		this.type = type;
 		this.data = data;
+	}
+
+	public Data() {
 	}
 
 	public Types getType() {
@@ -26,11 +22,16 @@ public class Data extends ResourceSupport{
 		this.type = type;
 	}
 
-	public byte[] getData() {
+	public String getData() {
 		return data;
 	}
 
-	public void setData(byte[] data) {
+	public void setData(String data) {
 		this.data = data;
+	}
+
+	@Override
+	public String toString() {
+		return "Data [type=" + type + ", data=" + data + "]";
 	}
 }
