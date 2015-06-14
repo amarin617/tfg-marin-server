@@ -1,5 +1,9 @@
 package marin.tfg.server.objects;
 
 public enum Types {
-	FACEDETECTOR
+	FACEDETECTOR,
+	TESTA,
+	TESTB,
+	TESTC,
+	TESTD
 }
