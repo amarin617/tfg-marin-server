@@ -7,9 +7,9 @@ public class LibProvider {
 	public byte[] libProvider(Types type, byte[] data) throws Exception {
 		switch (type) {
 		case FACEDETECTOR:
-			return DummyProcess.dummyMethod(data);
+			return FaceDetector.process(data);
 		case TESTA:
-			return DummyProcess.dummyMethod(data);
+			return data;
 		case TESTB:
 			return DummyProcess.dummyMethod(data);
 		case TESTC:
