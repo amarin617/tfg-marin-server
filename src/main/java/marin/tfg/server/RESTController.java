@@ -1,7 +1,9 @@
 package marin.tfg.server;
 
-import java.util.Arrays;
+import java.io.IOException;
+import java.util.logging.FileHandler;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -21,38 +23,84 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class RESTController {
-	
-	private static final Logger log = Logger.getLogger(RESTController.class
+
+	private static final Logger LOGGER = Logger.getLogger(RESTController.class
 			.getName());
+	private static final LibProvider PROVIDER = new LibProvider();
+
+	long startTime;
+	long elapsedTimeMillis;
 
 	@RequestMapping("/")
 	@ResponseBody
-	public HttpEntity<Data> requestData(@RequestBody String mRequest) {
+	public HttpEntity<Data> requestData(@RequestBody String request) {
 		try {
-			Data toSend = processRequest(mRequest);
-			return new ResponseEntity<Data>(toSend, HttpStatus.OK);
+			// Check file to add a Log Handler
+			addLogHandler();
+			// Return response with generated Data and Code 200 OK
+			return new ResponseEntity<Data>(process(request), HttpStatus.OK);
 		} catch (Exception ex) {
-			log.warning(ex.getMessage());
+			// Return an empty object Data and Code 500 Internal Server Error
 			return new ResponseEntity<Data>(new Data(null, null),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	private Data processRequest(String mRequest) throws Exception {
-		log.info("\n------------> New Request: " + mRequest);
+
+	/**
+	 * This method gets FileHandler object from path file and checks if
+	 * previously has been added to the Log. If not, the File Handler is added
+	 * to the Log.
+	 */
+	private void addLogHandler() {
+		try {
+			// Get FileHandler object from file path
+			FileHandler fh = new FileHandler(System.getProperty("user.home")
+					+ "/tfgServer/log.txt");
+			// Check if is handler exists
+			if (LOGGER.getHandlers().equals(fh)) {
+				// Add handler file to save log
+				LOGGER.addHandler(fh);
+				// Set a formatter text
+				fh.setFormatter(new SimpleFormatter());
+			}
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private Data process(String mRequest) throws Exception {
+		// Parse string to JSONObject
 		JSONParser parser = new JSONParser(JSONParser.MODE_JSON_SIMPLE);
 		JSONObject jObject = (JSONObject) parser.parse(mRequest);
+		// Start timer
+		startTimer();
+		// Generate Data Object with input Data
 		Data request = new Data((Types) Enum.valueOf(Types.class,
 				(String) jObject.get("type")), (String) jObject.get("data"));
-		log.info("Received Request: " + request.toString());
-		LibProvider mProvider = new LibProvider();
-		log.info("Processing Data Type: " + request.getType().toString());
-		byte[] result = mProvider.libProvider(request.getType(),
+		// Get result from library
+		byte[] result = PROVIDER.libProvider(request.getType(),
 				DatatypeConverter.parseBase64Binary(request.getData()));
-		log.info("Data result: " + Arrays.toString(result));
-		Data toSend = new Data(request.getType(),
+		// Generate new Data Object with the same Type Enum and with encoded
+		// Base64 data
+		Data response = new Data(request.getType(),
 				DatatypeConverter.printBase64Binary(result));
-		log.info("Generating response: " + toSend.toString());
-		return toSend;
+		// Stop Timer
+		stopTimer();
+		// Return response Data
+		return response;
+	}
+
+	private void startTimer() {
+		// Get and set current time
+		startTime = System.currentTimeMillis();
+	}
+
+	private void stopTimer() {
+		// Calculates the difference
+		elapsedTimeMillis = System.currentTimeMillis() - startTime;
+		// Add entry to log
+		LOGGER.info("" + elapsedTimeMillis);
 	}
 }

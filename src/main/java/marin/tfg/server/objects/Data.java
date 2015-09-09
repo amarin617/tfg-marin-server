@@ -1,7 +1,6 @@
 package marin.tfg.server.objects;
 
 public class Data {
-
 	private Types type;
 	private String data;
 
@@ -28,10 +27,5 @@ public class Data {
 
 	public void setData(String data) {
 		this.data = data;
-	}
-
-	@Override
-	public String toString() {
-		return "Data [type=" + type + ", data=" + data + "]";
 	}
 }

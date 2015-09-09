@@ -6,16 +6,14 @@ public class LibProvider {
 
 	public byte[] libProvider(Types type, byte[] data) throws Exception {
 		switch (type) {
-		case FACEDETECTOR:
-			return FaceDetector.process(data);
-		case TESTA:
+		case RTT:
+			// Return request as response
 			return data;
-		case TESTB:
-			return DummyProcess.dummyMethod(data);
-		case TESTC:
-			return DummyProcess.dummyMethod(data);
-		case TESTD:
-			return DummyProcess.dummyMethod(data);
+		case PROCESS:
+			// Simulate same Android Process
+			JavaDummyProcess.start();
+			// Return request as response
+			return data;
 		default:
 			throw new IllegalArgumentException();
 		}
