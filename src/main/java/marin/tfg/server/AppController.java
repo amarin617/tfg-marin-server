@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class RESTController {
+public class AppController {
 
-	private static final Logger LOGGER = Logger.getLogger(RESTController.class
+	private static final Logger LOGGER = Logger.getLogger(AppController.class
 			.getName());
 	private static final LibProvider PROVIDER = new LibProvider();
 
