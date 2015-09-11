@@ -76,15 +76,15 @@ public class AppController {
 		JSONObject jObject = (JSONObject) parser.parse(mRequest);
 		// Start timer
 		startTimer();
-		// Generate Data Object with input Data
-		Data request = new Data((Types) Enum.valueOf(Types.class,
-				(String) jObject.get("type")), (String) jObject.get("data"));
 		// Get result from library
-		byte[] result = PROVIDER.libProvider(request.getType(),
-				DatatypeConverter.parseBase64Binary(request.getData()));
+		byte[] result = PROVIDER
+				.libProvider((Types) Enum.valueOf(Types.class,
+						(String) jObject.get("type")), DatatypeConverter
+						.parseBase64Binary((String) jObject.get("data")));
 		// Generate new Data Object with the same Type Enum and with encoded
 		// Base64 data
-		Data response = new Data(request.getType(),
+		Data response = new Data((Types) Enum.valueOf(Types.class,
+				(String) jObject.get("type")),
 				DatatypeConverter.printBase64Binary(result));
 		// Stop Timer
 		stopTimer();
