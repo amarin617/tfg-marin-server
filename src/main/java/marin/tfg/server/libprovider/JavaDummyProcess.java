@@ -1,7 +1,7 @@
 package marin.tfg.server.libprovider;
 
 public class JavaDummyProcess {
-	private static final int SPIN_COUNT = 2000;
+	private static final int SPIN_COUNT = 5000;
 	private static final int NUMTHREADS = 4;
 
 	public static void start() {
