@@ -1,6 +1,7 @@
 package marin.tfg.server;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -53,11 +54,11 @@ public class AppController {
 	 */
 	private void addLogHandler() {
 		try {
-			// Get FileHandler object from file path
-			FileHandler fh = new FileHandler(System.getProperty("user.home")
-					+ "/tfgServer/log.txt");
 			// Check if is handler exists
-			if (LOGGER.getHandlers().equals(fh)) {
+			if (!(Array.getLength(LOGGER.getHandlers()) == 1)) {
+				// Get FileHandler object from file path
+				FileHandler fh = new FileHandler(System.getProperty("user.home")
+						+ "/tfgServer/log.txt");
 				// Add handler file to save log
 				LOGGER.addHandler(fh);
 				// Set a formatter text
