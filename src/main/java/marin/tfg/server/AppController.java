@@ -1,11 +1,5 @@
 package marin.tfg.server;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-
 import javax.xml.bind.DatatypeConverter;
 
 import marin.tfg.server.libprovider.LibProvider;
@@ -14,6 +8,8 @@ import marin.tfg.server.objects.Types;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class AppController {
 
-	private static final Logger LOGGER = Logger.getLogger(AppController.class
+	private static final Logger LOGGER = LoggerFactory.getLogger(AppController.class
 			.getName());
 	private static final LibProvider PROVIDER = new LibProvider();
 
@@ -36,38 +32,12 @@ public class AppController {
 	@ResponseBody
 	public HttpEntity<Data> requestData(@RequestBody String request) {
 		try {
-			// Check file to add a Log Handler
-			addLogHandler();
 			// Return response with generated Data and Code 200 OK
 			return new ResponseEntity<Data>(process(request), HttpStatus.OK);
 		} catch (Exception ex) {
 			// Return an empty object Data and Code 500 Internal Server Error
 			return new ResponseEntity<Data>(new Data(null, null),
 					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	/**
-	 * This method gets FileHandler object from path file and checks if
-	 * previously has been added to the Log. If not, the File Handler is added
-	 * to the Log.
-	 */
-	private void addLogHandler() {
-		try {
-			// Check if is handler exists
-			if (!(Array.getLength(LOGGER.getHandlers()) == 1)) {
-				// Get FileHandler object from file path
-				FileHandler fh = new FileHandler(System.getProperty("user.home")
-						+ "/tfgServer/log.txt");
-				// Add handler file to save log
-				LOGGER.addHandler(fh);
-				// Set a formatter text
-				fh.setFormatter(new SimpleFormatter());
-			}
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -102,6 +72,6 @@ public class AppController {
 		// Calculates the difference
 		elapsedTimeMillis = System.currentTimeMillis() - startTime;
 		// Add entry to log
-		LOGGER.info("" + elapsedTimeMillis);
+		LOGGER.info(elapsedTimeMillis + " ms");
 	}
 }
