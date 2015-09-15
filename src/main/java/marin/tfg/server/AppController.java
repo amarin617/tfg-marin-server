@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class AppController {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AppController.class
-			.getName());
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(AppController.class.getName());
 	private static final LibProvider PROVIDER = new LibProvider();
 
 	long startTime;
@@ -53,10 +53,10 @@ public class AppController {
 						(String) jObject.get("type")), DatatypeConverter
 						.parseBase64Binary((String) jObject.get("data")));
 		// Generate new Data Object with the same Type Enum and with encoded
-		// Base64 data
+		// Base64 data and timer
 		Data response = new Data((Types) Enum.valueOf(Types.class,
 				(String) jObject.get("type")),
-				DatatypeConverter.printBase64Binary(result));
+				DatatypeConverter.printBase64Binary(result) + stopTimer());
 		// Stop Timer
 		stopTimer();
 		// Return response Data
@@ -68,10 +68,12 @@ public class AppController {
 		startTime = System.currentTimeMillis();
 	}
 
-	private void stopTimer() {
+	private String stopTimer() {
 		// Calculates the difference
 		elapsedTimeMillis = System.currentTimeMillis() - startTime;
 		// Add entry to log
 		LOGGER.info(elapsedTimeMillis + " ms");
+		// return value
+		return ":" + elapsedTimeMillis;
 	}
 }
